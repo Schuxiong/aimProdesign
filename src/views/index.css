@@ -783,6 +783,7 @@ input[type="text"] {
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
+  cursor: pointer;
 }
 
 /* 操作符选择器 */
@@ -1755,373 +1756,173 @@ input[type="text"] {
   background: #f5f5f5;
 }
 
-/* 优化事件参数布局 */
+/* 事件参数 */
 .event-params {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-top: 10px;
+  gap: 12px;
 }
 
 .event-param {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 8px;
-  width: 100%;
-}
-
-.event-param>div:first-child {
-  display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .param-operator {
+  min-width: 100px;
+  height: 36px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  height: 32px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  background-color: #fff;
+  padding: 0 12px;
   cursor: pointer;
-  min-width: 80px;
-}
-
-.param-operator span {
-  color: #606266;
-  font-size: 13px;
+  background: white;
 }
 
 .param-value {
   flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.param-input {
-  width: 100%;
 }
 
 .param-input input {
-  height: 32px;
   width: 100%;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  padding: 0 10px;
-  color: #303133;
+  height: 36px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 0 12px;
+  transition: all 0.3s ease;
 }
 
+.param-input input:hover,
 .param-input input:focus {
-  border-color: #409EFF;
+  border-color: #00cf9a;
   outline: none;
 }
 
-/* 替代原来的AND标签样式 */
-.param-connector {
+.param-select {
+  height: 36px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
   display: flex;
-  margin: 8px 0 8px 36px;
-  cursor: pointer;
-}
-
-.param-connector .connector-btn {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 24px;
-  border-radius: 4px;
-  background-color: #f5f7fa;
-  color: #606266;
+  justify-content: space-between;
+  padding: 0 12px;
+  cursor: pointer;
+  background: white;
+}
+
+/* 添加参数按钮 */
+.add-param-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00cf9a;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.add-param-btn:hover {
+  color: #00b187;
+}
+
+.add-param-btn .plus-icon {
+  width: 14px;
+  height: 14px;
+  background: #00cf9a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   font-size: 12px;
-  font-weight: bold;
-  transition: all 0.2s;
+  position: relative;
 }
 
-.param-connector .connector-btn.and {
-  background-color: #ecf5ff;
-  color: #409eff;
-  border: 1px solid #d9ecff;
+.add-param-btn .plus-icon::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  background: white;
 }
 
-.param-connector .connector-btn.or {
-  background-color: #f0f9eb;
-  color: #67c23a;
-  border: 1px solid #e1f3d8;
+.add-param-btn .plus-icon::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: white;
 }
 
 /* 步骤连接符 */
 .step-connector {
-  margin: 20px 0;
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 100%;
+  align-items: center;
+  margin: 8px 0;
   position: relative;
   z-index: 1;
 }
 
 .step-connector .connector-btn {
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 60px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: #f5f7fa;
+  color: #606266;
   font-size: 14px;
-  color: #3c4043;
   cursor: pointer;
-  max-width: 250px;
-  white-space: nowrap;
-}
-
-/* 事件条件修复 */
-.event-condition {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 15px;
+  transition: all 0.3s;
+  border: 1px solid #dcdfe6;
   position: relative;
+  margin-left: 40px;
+  /* 添加左边距,与事件选择器对齐 */
 }
 
-/* 事件选择器修复 */
+.step-connector .connector-btn:hover {
+  background-color: #ecf5ff;
+}
+
+.step-connector .connector-btn.and {
+  background-color: #f0f9eb;
+  color: #67c23a;
+  border-color: #c2e7b0;
+}
+
+.step-connector .connector-btn.or {
+  background-color: #fdf6ec;
+  color: #e6a23c;
+  border-color: #f5dab1;
+}
+
+.step-connector .connector-btn.then {
+  background-color: #ecf5ff;
+  color: #409eff;
+  border-color: #b3d8ff;
+}
+
 .event-selector {
-  display: flex;
-  width: auto;
-  min-width: 160px;
-  margin-right: 10px;
+  margin-bottom: 12px;
+  /* 增加底部间距 */
 }
 
-.select-container {
-  position: relative;
-  width: 100%;
-}
-
-.select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-}
-
-/* 条件包装器修复 */
-.condition-wrapper {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 4px;
-  padding: 2px 10px;
-  border: 1px solid #ddd;
-  flex: 1;
-  margin-right: 5px;
-}
-
-/* 条件连接器修复 */
-.condition-connector {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 8px 0;
-  padding-left: 10px;
-}
-
-.condition-connector .connector-btn {
-  font-size: 12px;
-  background: #e8f0fe;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  color: #4285f4;
-}
-
-/* Add new condition 按钮修复 */
-.add-new-condition {
-  display: flex;
-  align-items: center;
-  margin: 10px 0 10px 10px;
-  cursor: pointer;
-  width: fit-content;
-}
-
-.condition-select {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-radius: 4px;
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  color: #555;
-}
-
-/* 步骤底部操作按钮修复 */
-.step-bottom-actions {
-  display: flex;
-  margin-top: 15px;
-  margin-left: 10px;
-  margin-bottom: 10px;
-}
-
-.step-bottom-actions .action-btn {
-  background: #e8f0fe;
-  color: #4285f4;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-/* 步骤头部修复 */
-.step-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  background: #f5f5f5;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.step-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: #00c292;
-  color: #fff;
-  border-radius: 50%;
-  margin-right: 10px;
-  font-weight: bold;
-}
-
-.step-title {
-  font-weight: 500;
-  color: #333;
-  flex: 1;
-}
-
-/* 整体容器修复 */
 .sequence-step {
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  position: relative;
+  padding: 16px;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  border: 1px solid #e4e7ed;
+  margin-bottom: 16px;
 }
 
 .step-content {
-  padding: 15px;
-}
-
-/* 参数操作区修复 */
-.param-operator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 80px;
-  height: 30px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  margin-right: 8px;
-  padding: 0 12px;
-  cursor: pointer;
-}
-
-.param-value {
-  flex: 1;
-  min-width: 50%;
-}
-
-.param-input {
-  width: 100%;
-}
-
-.param-input input {
-  width: 100%;
-  border: none;
-  outline: none;
-  padding: 8px 0;
-  font-size: 14px;
-  color: #3c4043;
-}
-
-/* 修复"is indirectly followed by"文本定位 */
-.is-followed-by {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 10px 0;
-  color: #3c4043;
-  font-size: 14px;
-}
-
-/* 添加步骤按钮 */
-.add-step-btn {
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 36px;
-  border: 1px dashed #e8e8e8;
-  border-radius: 8px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.add-step-btn:hover {
-  border-color: #00cf9a;
-  color: #00cf9a;
-  background: rgba(0, 207, 154, 0.05);
-}
-
-/* 添加参数按钮 */
-.add-param {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #4285f4;
-  margin: 0 5px;
-}
-
-.plus-icon {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-  display: inline-block;
-}
-
-.plus-icon:before,
-.plus-icon:after {
-  content: '';
-  position: absolute;
-  background-color: currentColor;
-}
-
-.plus-icon:before {
-  width: 12px;
-  height: 2px;
-  top: 7px;
-  left: 2px;
-}
-
-.plus-icon:after {
-  width: 2px;
-  height: 12px;
-  top: 2px;
-  left: 7px;
+  margin-top: 12px;
+  padding-left: 40px;
+  /* 添加左边距,让内容对齐 */
 }

@@ -383,90 +383,65 @@
                     </div>
                     
                     <div class="step-content">
-                      <!-- 事件选择器 -->
-                      <div class="event-condition">
-                        <div class="event-selector">
-                          <div class="select-container">
-                            <div class="select-trigger" @click="toggleEventDropdown(stepIndex)">
-                              <span>{{ step.event || '选择事件' }}</span>
-                              <i class="triangle-icon"></i>
-                            </div>
-                            
-                            <div v-if="step.showEventDropdown" class="select-dropdown">
-                              <div v-for="event in eventOptions" 
-                                   :key="event.value"
-                                   class="dropdown-item"
-                                   @click="selectEvent(stepIndex, event)">
-                                {{ event.label }}
-                              </div>
+                      <div class="event-selector">
+                        <div class="select-container">
+                          <div class="select-trigger" @click="toggleEventDropdown(stepIndex)">
+                            <span>{{ step.event || '选择事件' }}</span>
+                            <i class="triangle-icon"></i>
+                          </div>
+                          
+                          <div v-if="step.showEventDropdown" class="select-dropdown">
+                            <div v-for="event in eventOptions" 
+                                 :key="event.value"
+                                 class="dropdown-item"
+                                 @click="selectEvent(stepIndex, event)">
+                              {{ event.label }}
                             </div>
                           </div>
                         </div>
-                        
-                        <!-- 第一个条件 -->
-                        <div v-if="step.conditions.length > 0" class="condition-wrapper">
+                      </div>
+                      
+                      <!-- 事件参数区域 -->
+                      <div class="event-params">
+                        <div v-for="(param, paramIndex) in step.params" 
+                             :key="paramIndex"
+                             class="event-param">
                           <div class="param-operator">
-                            <span>{{ step.conditions[0].operator }}</span>
+                            <span>{{ param.operator }}</span>
                             <i class="triangle-icon"></i>
                           </div>
                           
                           <div class="param-value">
-                            <div class="param-input">
-                              <input type="text" v-model="step.conditions[0].value" placeholder="请输入" />
+                            <div v-if="param.type === 'text'" class="param-input">
+                              <input type="text" v-model="param.value" placeholder="请输入" />
+                            </div>
+                            <div v-else-if="param.type === 'number'" class="param-input">
+                              <input type="number" v-model="param.value" placeholder="0" />
+                            </div>
+                            <div v-else-if="param.type === 'select'" class="param-select">
+                              <span>{{ param.value || '请选择' }}</span>
+                              <i class="triangle-icon"></i>
                             </div>
                           </div>
                           
-                          <div class="add-param">
-                            <i class="plus-icon" @click="addParameter(stepIndex, 0)"></i>
-                          </div>
-                          
-                          <i class="delete-icon" @click="removeCondition(stepIndex, 0)"></i>
+                          <i class="delete-icon" @click="removeEventParam(stepIndex, paramIndex)"></i>
                         </div>
-                      </div>
-                      
-                      <!-- OR连接符 - 固定在第一个条件后 -->
-                      <div v-if="step.conditions.length > 0" class="condition-connector">
-                        <button class="connector-btn or">OR</button>
-                      </div>
-                      
-                      <!-- Add new condition 按钮 -->
-                      <div class="add-new-condition" @click="addCondition(stepIndex)">
-                        <div class="condition-select">
-                          <span>Add new condition</span>
-                          <i class="triangle-icon"></i>
+                        
+                        <!-- 添加参数按钮 -->
+                        <div class="add-param-btn" @click="addEventParam(stepIndex)">
+                          <i class="plus-icon"></i>
+                          <span>添加参数</span>
                         </div>
-                      </div>
-                      
-                      <!-- AND连接符 -->
-                      <div v-if="step.conditions.length > 1" class="condition-connector">
-                        <button class="connector-btn and">AND</button>
-                      </div>
-                      
-                      <!-- 额外的条件列表 -->
-                      <div v-for="(condition, condIndex) in step.conditions.slice(1)" 
-                           :key="condIndex + 1"
-                           class="add-new-condition">
-                        <div class="condition-select">
-                          <span>Add new condition</span>
-                          <i class="triangle-icon"></i>
-                        </div>
-                        <i class="delete-icon" @click="removeCondition(stepIndex, condIndex + 1)"></i>
-                      </div>
-                      
-                      <!-- AND/OR 切换按钮 -->
-                      <div class="step-bottom-actions">
-                        <button class="action-btn and">And</button>
                       </div>
                     </div>
                     
-                    <!-- 步骤间的连接符 -->
+                    <!-- 步骤间的连接符,移到事件选择器下面 -->
                     <div v-if="stepIndex < eventSteps.length - 1" 
                          class="step-connector"
                          @click="toggleStepConnector(stepIndex)">
                       <div class="connector-btn" :class="step.connector">
-                        {{ step.connector === 'indirectly' ? 'is indirectly followed by' : 
-                           step.connector === 'directly' ? 'is directly followed by' : 
-                           step.connector === 'and' ? 'And' : 'Or' }}
+                        {{ step.connector === 'and' ? 'And' : 
+                           step.connector === 'or' ? 'Or' : 'Then' }}
                       </div>
                     </div>
                   </div>
@@ -1611,15 +1586,8 @@ export default {
     addEventStep() {
       this.eventSteps.push({
         event: '',
-        conditions: [
-          {
-            operator: '包含',
-            value: '',
-            type: 'text'
-          }
-        ],
-        connector: 'indirectly',
-        showEventDropdown: false
+        params: [],
+        connector: 'and'
       });
     },
     // 移除事件步骤
@@ -1635,76 +1603,29 @@ export default {
       this.eventSteps[index].event = event.label;
       this.eventSteps[index].showEventDropdown = false;
     },
-    // 添加新条件
-    addCondition(stepIndex) {
-      this.eventSteps[stepIndex].conditions.push({
+    // 添加事件参数
+    addEventParam(index) {
+      this.eventSteps[index].params.push({
         operator: '包含',
         value: '',
         type: 'text'
       });
     },
-    // 添加参数
-    addParameter(stepIndex, conditionIndex) {
-      // 在特定条件下添加参数的逻辑
-    },
-    // 移除条件
-    removeCondition(stepIndex, conditionIndex) {
-      this.eventSteps[stepIndex].conditions.splice(conditionIndex, 1);
-      if (this.eventSteps[stepIndex].conditions.length === 0) {
-        // 如果没有条件,添加一个默认条件
-        this.eventSteps[stepIndex].conditions.push({
-          operator: '包含',
-          value: '',
-          type: 'text'
-        });
-      }
+    // 移除事件参数
+    removeEventParam(index, paramIndex) {
+      this.eventSteps[index].params.splice(paramIndex, 1);
     },
     // 切换步骤连接符
     toggleStepConnector(index) {
-      const connectors = ['indirectly', 'directly', 'and', 'or'];
+      const connectors = ['and', 'or', 'then'];
       const rule = this.eventSteps[index];
       const currentIndex = connectors.indexOf(rule.connector);
       const nextIndex = (currentIndex + 1) % connectors.length;
       rule.connector = connectors[nextIndex];
     },
-    // 切换参数连接符
-    toggleParamConnector(stepIndex, paramIndex) {
-      const param = this.eventSteps[stepIndex].conditions[paramIndex];
-      param.connector = param.connector === 'and' ? 'or' : 'and';
-    },
     // 添加事件序列区域
     addEventSequence() {
-      this.hasEventSequence = true;
       this.showEventSequence = true;
-      if (this.eventSteps.length === 0) {
-        // 默认添加两个步骤,每个步骤有多个参数条件
-        this.eventSteps = [
-          {
-            event: 'app_clear_data',
-            conditions: [
-              {
-                operator: '包含',
-                value: 'qqw',
-                type: 'text'
-              }
-            ],
-            connector: 'indirectly',
-            showEventDropdown: false
-          },
-          {
-            event: 'first_open',
-            conditions: [
-              {
-                operator: '大于',
-                value: '0',
-                type: 'number'
-              }
-            ],
-            connector: 'indirectly',
-            showEventDropdown: false
-          }
-        ];
-      }
     },
     // 删除事件序列区域
     deleteEventSequence() {
@@ -1716,21 +1637,29 @@ export default {
     this.eventSteps = [
       {
         event: 'app_clear_data',
-        conditions: [
+        params: [
           {
             operator: '包含',
             value: 'qqw',
             type: 'text'
           }
         ],
-        connector: 'indirectly',
+        connector: 'and',
+        showEventDropdown: false
+      },
+      {
+        event: 'first_open',
+        params: [
+          {
+            operator: '大于',
+            value: '0',
+            type: 'number'
+          }
+        ],
+        connector: 'and',
         showEventDropdown: false
       }
     ];
-    
-    // 添加事件圈人部分
-    this.hasEventSequence = true;
-    this.showEventSequence = true;
   }
 }
 </script>

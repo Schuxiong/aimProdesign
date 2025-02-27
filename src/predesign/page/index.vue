@@ -720,6 +720,8 @@
   </div>
 </template>
 
-<script setup lang="javascript"></script>
+<script setup>
+import Page from './page/index.vue'
+</script>
 
 <style src="./index.css"></style>
